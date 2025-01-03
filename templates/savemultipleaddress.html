@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save Multiple Addresses</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #fc8019;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #fc8019;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #e67614;
+        }
+
+        /* Address List */
+        .address-list {
+            margin-top: 20px;
+        }
+        .address-item {
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 5px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+        .view-btn {
+            background-color: #fc8019;
+            color: white;
+        }
+        .view-btn:hover {
+            background-color: #e67614;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+        }
+        .delete-btn:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Save Multiple Addresses</h1>
+        <div>
+            <div class="form-group">
+                <label for="address">Enter Address</label>
+                <input type="text" id="address" placeholder="e.g., Street Name, City, etc. (Minimum 10 characters)">
+            </div>
+            <div class="form-group">
+                <label for="type">Select Address Type</label>
+                <select id="type">
+                    <option value="Home">Home</option>
+                    <option value="Work">Work</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <button onclick="addAddress()">Add Address</button>
+        </div>
+
+        <div class="address-list" id="addressList">
+            <h2 style="color: #333;">Saved Addresses</h2>
+        </div>
+    </div>
+
+    <script>
+        let addresses = [];
+
+        function addAddress() {
+            const addressInput = document.getElementById('address');
+            const typeInput = document.getElementById('type');
+            const address = addressInput.value.trim();
+            const type = typeInput.value;
+
+            if (address.length < 10) {
+                alert("Please enter a valid address. The address must be at least 10 characters long.");
+                return;
+            }
+
+            // Check for duplicate addresses
+            const duplicate = addresses.some(item => item.address === address && item.type === type);
+            if (duplicate) {
+                alert("This address already exists.");
+                return;
+            }
+
+            addresses.push({ address, type });
+            addressInput.value = "";
+            displayAddresses();
+        }
+
+        function displayAddresses() {
+            const addressList = document.getElementById('addressList');
+            addressList.innerHTML = "<h2 style='color: #333;'>Saved Addresses</h2>";
+
+            addresses.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'address-item';
+                div.innerHTML = `
+                    <div>
+                        <strong>Type:</strong> ${item.type} <br>
+                        <strong>Address:</strong> ${item.address}
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn view-btn" onclick="viewAddress(${index})">View</button>
+                        <button class="btn delete-btn" onclick="deleteAddress(${index})">Delete</button>
+                    </div>
+                `;
+                addressList.appendChild(div);
+            });
+        }
+
+        function viewAddress(index) {
+            const { address, type } = addresses[index];
+            alert(`Address Type: ${type}\nAddress: ${address}`);
+        }
+
+        function deleteAddress(index) {
+            addresses.splice(index, 1);
+            displayAddresses();
+        }
+    </script>
+</body>
+</html>
